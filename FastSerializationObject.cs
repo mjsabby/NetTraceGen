@@ -45,6 +45,11 @@
             this.stream.Position += (int)(0 - this.stream.Position & (align - 1));
         }
 
+        public void WriteBytes(ReadOnlySpan<byte> data)
+        {
+            this.stream.Write(data);
+        }
+
         public void WriteIntValue(int value)
         {
             WriteIntValue(this.stream, value);

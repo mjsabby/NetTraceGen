@@ -30,40 +30,63 @@
             var traceObject = new Trace(qpc, freq, in now, -1, IntPtr.Size, Environment.ProcessorCount, 1);
             traceObject.Serialize(fs);
 
-            var metadataEventBlobs = new MetadataEventBlob[1];
-            var fieldDefinitions = new FieldDefinition[1];
-            fieldDefinitions[0] = new FieldDefinition(TypeCode.String, "MyFieldName");
-            metadataEventBlobs[0] = new MetadataEventBlob
+            var metadataEventBlobs = new[]
             {
-                MetadataId = 1,
-                Level = 1,
-                Version = 1,
-                Keywords = 0,
-                EventName = "MyEventName",
-                ProviderName = "MyEventProvider",
-                EventId = 1,
-                EventHeader =
+                new MetadataEventBlob
                 {
-                    ActivityId = Guid.NewGuid(),
-                    RelatedActivityId = Guid.NewGuid(),
-                    CaptureThreadId = 1000,
-                    ThreadId = 2000,
-                    SequenceNumber = 1,
-                    CaptureProcNumber = 10,
-                    StackId = 0,
-                    TimeStamp = Stopwatch.GetTimestamp()
-                },
-                FieldDefinitions = fieldDefinitions
+                    MetadataId = 1,
+                    Level = 1,
+                    Version = 1,
+                    Keywords = 0,
+                    EventName = "MyEventName",
+                    ProviderName = "MyEventProvider",
+                    EventId = 1,
+                    EventHeader =
+                    {
+                        ActivityId = Guid.NewGuid(),
+                        RelatedActivityId = Guid.NewGuid(),
+                        CaptureThreadId = 1000,
+                        ThreadId = 2000,
+                        SequenceNumber = 1,
+                        CaptureProcNumber = 10,
+                        StackId = 0,
+                        TimeStamp = Stopwatch.GetTimestamp()
+                    },
+                    FieldDefinitions = new[]
+                    {
+                        new FieldDefinition(TypeCode.String, "MyFieldName")
+                    }
+                }
             };
 
-            var metadataBlock = new EventBlock<MetadataEventBlob>("MetadataBlock", 2, 2, metadataEventBlobs);
+            var metadataBlock = new EventBlock<MetadataEventBlob>("MetadataBlock", 2, 2, false, metadataEventBlobs);
             metadataBlock.Serialize(fs);
 
-            var stringBlobs = new StringEventBlob[2];
-            stringBlobs[0] = new StringEventBlob("Hello World", 1);
-            stringBlobs[1] = new StringEventBlob("Hello World 2", 1);
-
-            var eventBlock = new EventBlock<StringEventBlob>("EventBlock", 2, 2, stringBlobs);
+            var stringBlobs = new[]
+            {
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World", 1),
+                new StringEventBlob("Hello World 2", 1),
+                new StringEventBlob("Hello World", 1)
+            };
+            
+            var eventBlock = new EventBlock<StringEventBlob>("EventBlock", 2, 2, true, stringBlobs);
+            eventBlock.Serialize(fs);
+            eventBlock.Serialize(fs);
             eventBlock.Serialize(fs);
 
             fs.Write(new ReadOnlySpan<byte>(new byte[] { 0x1 })); // NullReference Tag means EOF
