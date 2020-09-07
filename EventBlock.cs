@@ -43,7 +43,6 @@
                 for (int i = 0; i < this.eventBlobs.Length; ++i)
                 {
                     blockSize += this.eventBlobs[i].GetSerializationSize();
-                    blockSize += Padding(blockSize, 4);
                 }
 
                 obj.WriteIntValue(blockSize);
@@ -80,7 +79,6 @@
                 for (int i = 0; i < this.eventBlobs.Length; ++i)
                 {
                     this.eventBlobs[i].Serialize(compressionStream);
-                    compressionStream.Position += Padding(compressionStream.Position, 4);
                 }
 
                 outputMemory = arrayPool.Rent(1024 * 1024); // !MB
@@ -111,12 +109,6 @@
                     arrayPool.Return(outputMemory);
                 }
             }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int Padding(long num, int align)
-        {
-            return (int)(0 - num & (align - 1));
         }
     }
 }

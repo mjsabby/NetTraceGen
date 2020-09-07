@@ -1,6 +1,5 @@
 ﻿namespace NetTraceGen
 {
-    using System;
     using System.IO;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
@@ -9,22 +8,33 @@
     {
         public NetTraceHeader EventHeader;
 
-        public unsafe int GetSerializationSize() => sizeof(NetTraceHeader) + this.GetPayloadSize();
+        public unsafe int GetSerializationSize()
+        {
+            var tmp = sizeof(NetTraceHeader) + this.GetPayloadSize();
+            tmp += Padding(tmp, 4);
 
-        public virtual void Serialize(Stream stream)
+            return tmp;
+        }
+
+        protected abstract void SerializeBlob(Stream stream);
+
+        public void Serialize(Stream stream)
         {
             this.EventHeader.PayloadSize = this.GetPayloadSize();
             this.EventHeader.EventSize = this.GetSerializationSize() - sizeof(int);
+            stream.Write(MemoryMarshal.Cast<NetTraceHeader, byte>(MemoryMarshal.CreateReadOnlySpan(ref this.EventHeader, 1)));
 
-            stream.Write(this.AsSpan(ref this.EventHeader));
+            this.SerializeBlob(stream);
+
+            stream.Position += Padding(stream.Position, 4);
         }
 
         internal abstract int GetPayloadSize();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ReadOnlySpan<byte> AsSpan<T>(ref T val) where T : unmanaged
+        private static int Padding(long num, int align)
         {
-            return MemoryMarshal.Cast<T, byte>(MemoryMarshal.CreateReadOnlySpan(ref val, 1));
+            return (int)(0 - num & (align - 1));
         }
     }
 }

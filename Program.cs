@@ -36,15 +36,17 @@
                 {
                     MetadataId = 1,
                     Level = 1,
-                    Version = 1,
+                    Version = 0,
                     Keywords = 0,
                     EventName = "MyEventName",
                     ProviderName = "MyEventProvider",
-                    EventId = 1,
+                    EventId = 0,
+                    Opcode = 35,
+                    WindowsClassicEventProviderGuid = new Guid("9b79ee91-b5fd-41c0-a243-4248e266e9d0"),
                     EventHeader =
                     {
-                        ActivityId = Guid.NewGuid(),
-                        RelatedActivityId = Guid.NewGuid(),
+                        ActivityId = Guid.Empty,
+                        RelatedActivityId = Guid.Empty,
                         CaptureThreadId = 1000,
                         ThreadId = 2000,
                         SequenceNumber = 1,
@@ -54,7 +56,8 @@
                     },
                     FieldDefinitions = new[]
                     {
-                        new FieldDefinition(TypeCode.String, "MyFieldName")
+                        new FieldDefinition((int)TypeCode.String, 0, "MyFieldName1"),
+                        new FieldDefinition((int)TypeCode.String, 0, "MyFieldName2")
                     }
                 }
             };
@@ -64,24 +67,24 @@
 
             var stringBlobs = new[]
             {
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World", 1),
-                new StringEventBlob("Hello World 2", 1),
-                new StringEventBlob("Hello World", 1)
+                new StringEventBlob("Hello World", "Something else kjdjks", 1),
+                new StringEventBlob("Hello World", "Something else", 1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World","Something else", 1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1),
+                new StringEventBlob("Hello World 2", "Something else",1),
+                new StringEventBlob("Hello World", "Something else",1)
             };
             
             var eventBlock = new EventBlock<StringEventBlob>("EventBlock", 2, 2, true, stringBlobs);
